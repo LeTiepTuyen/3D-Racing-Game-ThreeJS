@@ -18,6 +18,7 @@ class RacingGame {
         this.initCamera();
         this.initRenderer();
         this.initHUD();
+        this.initMenuUI();
         
         // Game state
         this.clock = new THREE.Clock();
@@ -25,6 +26,9 @@ class RacingGame {
         
         // Start button handler
         this.setupStartButton();
+        
+        // Setup game over callback
+        this.gameLogic.setOnGameOver((result) => this.showGameOver(result));
         
         console.log('Racing Game initialized');
     }
@@ -110,16 +114,36 @@ class RacingGame {
             1000 // Far plane
         );
         
-        // Camera follow parameters
-        this.cameraOffset = new THREE.Vector3(0, 8, -15);
-        this.cameraLookAtOffset = new THREE.Vector3(0, 0, 10);
-        this.cameraSmoothing = 0.1;
+        // Camera orbit parameters (spherical coordinates)
+        this.cameraDistance = 18;        // Distance from car
+        this.cameraAzimuth = Math.PI;    // Horizontal angle (radians) - start behind car
+        this.cameraPolar = Math.PI / 3;  // Vertical angle (radians) - ~60 degrees from top
+        this.cameraSmoothing = 0.08;     // Camera position smoothing (lower = smoother but laggier)
+        this.targetSmoothing = 0.12;     // Target/lookAt position smoothing
+        
+        // Camera orbit constraints
+        this.minPolar = 0.2;             // Minimum vertical angle (prevent going under car)
+        this.maxPolar = Math.PI / 2.2;   // Maximum vertical angle (prevent going too low)
+        this.minDistance = 8;            // Minimum zoom distance
+        this.maxDistance = 40;           // Maximum zoom distance
+        
+        // Mouse control state
+        this.isMouseDragging = false;
+        this.previousMousePosition = { x: 0, y: 0 };
+        this.mouseSensitivity = 0.005;   // Mouse movement sensitivity
+        
+        // Look at offset (slight offset above car center)
+        this.cameraLookAtOffset = new THREE.Vector3(0, 1.5, 0);
+        
+        // Smooth target position (to prevent jitter)
+        this.smoothTargetPosition = new THREE.Vector3(0, 0, 0);
+        this.smoothLookAtPosition = new THREE.Vector3(0, 0, 0);
         
         // Set initial camera position
         this.camera.position.set(0, 10, -20);
         this.camera.lookAt(0, 0, 0);
         
-        console.log('Camera initialized');
+        console.log('Camera initialized with orbit controls');
     }
 
     /**
@@ -140,7 +164,80 @@ class RacingGame {
         // Handle window resize
         window.addEventListener('resize', () => this.onWindowResize());
         
+        // Initialize mouse controls for camera orbit
+        this.initMouseControls();
+        
         console.log('Renderer initialized');
+    }
+
+    /**
+     * Initialize mouse controls for camera orbit
+     */
+    initMouseControls() {
+        const canvas = this.renderer.domElement;
+        
+        // Mouse down - start dragging
+        canvas.addEventListener('mousedown', (event) => {
+            // Only respond to left mouse button
+            if (event.button === 0) {
+                this.isMouseDragging = true;
+                this.previousMousePosition = {
+                    x: event.clientX,
+                    y: event.clientY
+                };
+                canvas.style.cursor = 'grabbing';
+            }
+        });
+        
+        // Mouse move - rotate camera if dragging
+        canvas.addEventListener('mousemove', (event) => {
+            if (this.isMouseDragging && this.isGameStarted) {
+                const deltaX = event.clientX - this.previousMousePosition.x;
+                const deltaY = event.clientY - this.previousMousePosition.y;
+                
+                // Update azimuth (horizontal rotation)
+                this.cameraAzimuth -= deltaX * this.mouseSensitivity;
+                
+                // Update polar (vertical rotation) with constraints
+                this.cameraPolar += deltaY * this.mouseSensitivity;
+                this.cameraPolar = Math.max(this.minPolar, Math.min(this.maxPolar, this.cameraPolar));
+                
+                // Store current mouse position
+                this.previousMousePosition = {
+                    x: event.clientX,
+                    y: event.clientY
+                };
+            }
+        });
+        
+        // Mouse up - stop dragging
+        canvas.addEventListener('mouseup', () => {
+            this.isMouseDragging = false;
+            canvas.style.cursor = 'grab';
+        });
+        
+        // Mouse leave - stop dragging if mouse leaves canvas
+        canvas.addEventListener('mouseleave', () => {
+            this.isMouseDragging = false;
+            canvas.style.cursor = 'grab';
+        });
+        
+        // Mouse wheel - zoom in/out
+        canvas.addEventListener('wheel', (event) => {
+            event.preventDefault();
+            
+            // Adjust camera distance based on scroll direction
+            const zoomSpeed = 2;
+            this.cameraDistance += event.deltaY > 0 ? zoomSpeed : -zoomSpeed;
+            
+            // Clamp distance within min/max bounds
+            this.cameraDistance = Math.max(this.minDistance, Math.min(this.maxDistance, this.cameraDistance));
+        }, { passive: false });
+        
+        // Set initial cursor style
+        canvas.style.cursor = 'grab';
+        
+        console.log('Mouse controls initialized for camera orbit');
     }
 
     /**
@@ -150,8 +247,185 @@ class RacingGame {
         this.speedElement = document.getElementById('speed');
         this.lapElement = document.getElementById('lap');
         this.timerElement = document.getElementById('timer');
+        this.scoreElement = document.getElementById('score');
         
         console.log('HUD initialized');
+    }
+
+    /**
+     * Initialize Menu UI
+     */
+    initMenuUI() {
+        // Get UI elements
+        this.menuButton = document.getElementById('menuButton');
+        this.menuDropdown = document.getElementById('menuDropdown');
+        this.restartBtn = document.getElementById('restartBtn');
+        this.pauseBtn = document.getElementById('pauseBtn');
+        this.pauseOverlay = document.getElementById('pauseOverlay');
+        this.continueBtn = document.getElementById('continueBtn');
+        this.gameOverOverlay = document.getElementById('gameOverOverlay');
+        this.playAgainBtn = document.getElementById('playAgainBtn');
+        
+        // Menu toggle
+        this.menuButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.toggleMenu();
+        });
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!this.menuDropdown.contains(e.target) && e.target !== this.menuButton) {
+                this.menuDropdown.classList.remove('show');
+            }
+        });
+        
+        // Restart button
+        this.restartBtn.addEventListener('click', () => {
+            this.restartGame();
+            this.menuDropdown.classList.remove('show');
+        });
+        
+        // Pause button
+        this.pauseBtn.addEventListener('click', () => {
+            this.pauseGame();
+            this.menuDropdown.classList.remove('show');
+        });
+        
+        // Continue button (from pause overlay)
+        this.continueBtn.addEventListener('click', () => {
+            this.resumeGame();
+        });
+        
+        // Play again button (from game over screen)
+        this.playAgainBtn.addEventListener('click', () => {
+            this.restartGame();
+            this.gameOverOverlay.classList.remove('show');
+        });
+        
+        // ESC key to pause/resume
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (this.isGameStarted && !this.gameLogic.getIsGameOver()) {
+                    if (this.gameLogic.getIsPaused()) {
+                        this.resumeGame();
+                    } else {
+                        this.pauseGame();
+                    }
+                }
+            }
+        });
+        
+        console.log('Menu UI initialized');
+    }
+
+    /**
+     * Toggle menu dropdown
+     */
+    toggleMenu() {
+        this.menuDropdown.classList.toggle('show');
+        
+        // Update pause button text based on current state
+        if (this.gameLogic.getIsPaused()) {
+            this.pauseBtn.textContent = '▶ Continue';
+        } else {
+            this.pauseBtn.textContent = '⏸ Pause';
+        }
+    }
+
+    /**
+     * Pause the game
+     */
+    pauseGame() {
+        if (this.isGameStarted && !this.gameLogic.getIsGameOver()) {
+            this.gameLogic.pause();
+            this.clock.stop();
+            
+            // Update pause overlay stats
+            document.getElementById('pauseLap').textContent = this.gameLogic.getLapCount();
+            document.getElementById('pauseScore').textContent = this.gameLogic.getScore();
+            document.getElementById('pauseTime').textContent = this.gameLogic.getFormattedTime();
+            
+            this.pauseOverlay.classList.add('show');
+            console.log('Game paused');
+        }
+    }
+
+    /**
+     * Resume the game
+     */
+    resumeGame() {
+        this.gameLogic.resume();
+        this.clock.start();
+        this.pauseOverlay.classList.remove('show');
+        console.log('Game resumed');
+    }
+
+    /**
+     * Restart the game
+     */
+    restartGame() {
+        // Hide overlays
+        this.pauseOverlay.classList.remove('show');
+        this.gameOverOverlay.classList.remove('show');
+        
+        // Reset game logic
+        this.gameLogic.reset();
+        
+        // Reset car position
+        this.car.reset();
+        
+        // Reset camera to default orbit position
+        this.resetCameraOrbit();
+        
+        // Restart game
+        this.gameLogic.start();
+        this.clock.start();
+        this.isGameStarted = true;
+        
+        console.log('Game restarted');
+    }
+
+    /**
+     * Show game over screen
+     */
+    showGameOver(result) {
+        // Update game over stats
+        document.getElementById('finalScore').textContent = result.score;
+        document.getElementById('finalLaps').textContent = result.laps;
+        document.getElementById('finalTime').textContent = this.formatTime(result.totalTime);
+        document.getElementById('bestLapTime').textContent = result.bestLapTime ? this.formatTime(result.bestLapTime) : '--:--';
+        
+        // Update title based on win/lose
+        const gameOverTitle = document.getElementById('gameOverTitle');
+        const gameOverMessage = document.getElementById('gameOverMessage');
+        
+        if (result.isWinner) {
+            gameOverTitle.textContent = '🏆 RACE COMPLETE!';
+            gameOverTitle.style.color = '#ffd700';
+            gameOverMessage.textContent = 'Congratulations! You finished the race!';
+        } else {
+            gameOverTitle.textContent = '💥 GAME OVER';
+            gameOverTitle.style.color = '#ff4444';
+            gameOverMessage.textContent = 'Better luck next time!';
+        }
+        
+        // Show overlay
+        this.gameOverOverlay.classList.add('show');
+        
+        // Stop clock
+        this.clock.stop();
+        
+        console.log('Game over displayed', result);
+    }
+
+    /**
+     * Format time from ms to MM:SS
+     */
+    formatTime(ms) {
+        const totalSeconds = Math.floor(ms / 1000);
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
+        return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     }
 
     /**
@@ -174,36 +448,76 @@ class RacingGame {
         this.isGameStarted = true;
         this.gameLogic.start();
         this.clock.start();
+        
+        // Initialize smooth camera positions to car's starting position
+        const carPos = this.car.getPosition();
+        this.smoothTargetPosition.set(carPos.x, carPos.y, carPos.z);
+        this.smoothLookAtPosition.set(
+            carPos.x + this.cameraLookAtOffset.x,
+            carPos.y + this.cameraLookAtOffset.y,
+            carPos.z + this.cameraLookAtOffset.z
+        );
+        
         console.log('Game started');
     }
 
     /**
-     * Update camera to follow the car
+     * Update camera to follow the car with orbit controls
      */
     updateCamera() {
-        // Get car position
+        // Get car position from physics body
         const carPosition = this.car.getPosition();
         
-        // Calculate desired camera position (fixed behind and above the car in world space)
-        // The camera offset is NOT rotated with the car - it stays fixed
-        const desiredCameraPosition = new THREE.Vector3(
-            carPosition.x + this.cameraOffset.x,
-            carPosition.y + this.cameraOffset.y,
-            carPosition.z + this.cameraOffset.z
+        // First, smooth the target position (car position) to reduce jitter
+        // This creates a "virtual" target that moves smoothly
+        this.smoothTargetPosition.lerp(
+            new THREE.Vector3(carPosition.x, carPosition.y, carPosition.z),
+            this.targetSmoothing
         );
         
-        // Smoothly interpolate camera position for smooth following
+        // Calculate camera position using spherical coordinates around smoothed target
+        const offsetX = this.cameraDistance * Math.sin(this.cameraPolar) * Math.sin(this.cameraAzimuth);
+        const offsetY = this.cameraDistance * Math.cos(this.cameraPolar);
+        const offsetZ = this.cameraDistance * Math.sin(this.cameraPolar) * Math.cos(this.cameraAzimuth);
+        
+        // Calculate desired camera position relative to smoothed target
+        const desiredCameraPosition = new THREE.Vector3(
+            this.smoothTargetPosition.x + offsetX,
+            this.smoothTargetPosition.y + offsetY,
+            this.smoothTargetPosition.z + offsetZ
+        );
+        
+        // Smoothly interpolate camera position
         this.camera.position.lerp(desiredCameraPosition, this.cameraSmoothing);
         
-        // Calculate look-at position (car center + slight forward offset)
-        const lookAtPosition = new THREE.Vector3(
-            carPosition.x,
-            carPosition.y + this.cameraLookAtOffset.y,
-            carPosition.z + this.cameraLookAtOffset.z
+        // Smooth the look-at position as well
+        const desiredLookAt = new THREE.Vector3(
+            this.smoothTargetPosition.x + this.cameraLookAtOffset.x,
+            this.smoothTargetPosition.y + this.cameraLookAtOffset.y,
+            this.smoothTargetPosition.z + this.cameraLookAtOffset.z
         );
+        this.smoothLookAtPosition.lerp(desiredLookAt, this.targetSmoothing);
         
-        // Make camera look at the target position
-        this.camera.lookAt(lookAtPosition);
+        // Make camera look at the smoothed position
+        this.camera.lookAt(this.smoothLookAtPosition);
+    }
+
+    /**
+     * Reset camera to default position behind car
+     */
+    resetCameraOrbit() {
+        this.cameraAzimuth = Math.PI;    // Behind car
+        this.cameraPolar = Math.PI / 3;  // ~60 degrees from top
+        this.cameraDistance = 18;        // Default distance
+        
+        // Reset smooth positions to car's current position
+        const carPos = this.car.getPosition();
+        this.smoothTargetPosition.set(carPos.x, carPos.y, carPos.z);
+        this.smoothLookAtPosition.set(
+            carPos.x + this.cameraLookAtOffset.x,
+            carPos.y + this.cameraLookAtOffset.y,
+            carPos.z + this.cameraLookAtOffset.z
+        );
     }
 
     /**
@@ -214,12 +528,17 @@ class RacingGame {
         const speed = this.car.getSpeed();
         this.speedElement.textContent = speed;
         
-        // Update lap count
+        // Update lap count (with total laps)
         this.lapElement.textContent = this.gameLogic.getLapCount();
         
         // Update timer
         if (this.gameLogic.isActive()) {
             this.timerElement.textContent = this.gameLogic.getFormattedTime();
+        }
+        
+        // Update score
+        if (this.scoreElement) {
+            this.scoreElement.textContent = this.gameLogic.getScore();
         }
     }
 
@@ -232,12 +551,17 @@ class RacingGame {
         // Get delta time
         const deltaTime = this.clock.getDelta();
         
-        // Update physics
-        this.physicsWorld.update(deltaTime);
-        
-        if (this.isGameStarted) {
-            // Update game objects
+        if (this.isGameStarted && !this.gameLogic.getIsPaused() && !this.gameLogic.getIsGameOver()) {
+            // 1. First: Car sets its intended velocity based on input
             this.car.update(deltaTime);
+            
+            // 2. Then: Physics engine processes movement AND collisions
+            this.physicsWorld.update(deltaTime);
+            
+            // 3. Finally: Sync visual position with physics result
+            this.car.syncVisualWithPhysics();
+            
+            // Update game logic and environment
             this.gameLogic.update(deltaTime);
             this.environment.update(deltaTime);
             
@@ -246,6 +570,15 @@ class RacingGame {
             
             // Update HUD
             this.updateHUD();
+        } else {
+            // Still update physics for gravity/settling when not playing
+            this.physicsWorld.update(deltaTime);
+            
+            if (this.isGameStarted) {
+                // Still update camera and HUD when paused
+                this.updateCamera();
+                this.updateHUD();
+            }
         }
         
         // Render scene

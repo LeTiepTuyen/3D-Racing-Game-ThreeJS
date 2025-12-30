@@ -1,291 +1,455 @@
-# 3D Racing Game Prototype - Challenge 1
+# 🏎️ 3D Racing Game - Three.js Challenge 1
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Three.js](https://img.shields.io/badge/Three.js-v0.160.0-black?logo=three.js)](https://threejs.org/)
+[![Cannon-es](https://img.shields.io/badge/Cannon--es-v0.20.0-orange)](https://pmndrs.github.io/cannon-es/)
+[![Vite](https://img.shields.io/badge/Vite-v5.0.0-646CFF?logo=vite)](https://vitejs.dev/)
+[![Node.js](https://img.shields.io/badge/Node.js-v16+-339933?logo=node.js)](https://nodejs.org/)
+
+> A 3D car racing game prototype built with Three.js for rendering and Cannon-es for physics simulation. Features realistic Bugatti car model, physics-based collision detection, orbit camera controls, and a complete scoring system.
 
 **Author:** Le Tiep Tuyen  
 **Student ID:** 22020015  
-**Project:** 3D Car Racing Game using Three.js and Cannon.js
+**Course:** 3D Programming - Three.js  
+**Date:** November 2025
+
+---
+
+## 🎬 Demo Video
+
+🔗 **[Watch Demo Video on Google Drive](https://drive.google.com/file/d/1UL-67cvA8wjS04THGqKGHlQL7D-HEwUF/view?usp=drive_link)**
+
+
+
+---
+
+## 📸 Screenshots
+
+
+
+| Game Start | Gameplay | Pause Menu |
+|:----------:|:--------:|:----------:|
+| ![Start Screen](demo/start-screen.png) | ![Gameplay](demo/gameplay.png) | ![Pause Menu](demo/pause-menu.png) |
+
+| Camera Angles | Game Over |
+|:-------------:|:---------:|
+| ![Camera](demo/camera-angles.png) | ![Game Over](demo/game-over.png) | 
+
+
+---
+
+## 📋 Table of Contents
+
+- [Project Overview](#-project-overview)
+- [Features](#-features)
+- [Technologies Used](#️-technologies-used)
+- [Project Structure](#-project-structure)
+- [Installation and Setup](#-installation-and-setup)
+- [Game Rules](#-game-rules)
+- [Controls Guide](#-controls-guide)
+- [Game Mechanics](#-game-mechanics)
+- [Architecture Details](#️-architecture-details)
+- [Customization Options](#-customization-options)
+- [Troubleshooting](#-troubleshooting)
+- [License](#-license)
+- [Author Information](#-author-information)
+
+---
 
 ## 📋 Project Overview
 
-This is a 3D car racing game prototype built with Three.js for rendering and Cannon.js (cannon-es) for physics simulation. The game features a circular racing track, realistic car physics, lap counting, and a heads-up display (HUD) showing speed, lap count, and elapsed time.
+This is a **3D car racing game prototype** built with modern web technologies. The game features:
+
+- A circular racing track with physics-based wall collisions
+- A realistic **Bugatti car model** loaded from OBJ/MTL files
+- **Orbit camera controls** with mouse drag and zoom
+- **Lap counting** with checkpoint system
+- **Scoring system** with speed bonuses
+- Complete **UI/Menu system** with Pause, Restart, and Game Over screens
+- Smooth camera following with **double smoothing** to prevent jitter
+
+The goal is to complete **2 laps** around the track, passing through all checkpoints in order to win the race!
+
+---
 
 ## ✨ Features
 
 ### Core Features
-- ✅ **3D Environment**: Fully rendered 3D scene with ground, walls, and racing track
-- ✅ **Physics Simulation**: Realistic physics powered by Cannon.js with gravity and collisions
-- ✅ **Car Controls**: Smooth car movement with WASD/Arrow key controls
-- ✅ **Camera Follow**: Dynamic camera that follows the car from behind
-- ✅ **Lap Detection**: Checkpoint system for automatic lap counting
-- ✅ **HUD Display**: Real-time display of speed (km/h), lap count, and timer
-- ✅ **Visual Polish**: Shadows, textures, and lighting effects
+| Feature | Description | Status |
+|---------|-------------|:------:|
+| **3D Environment** | Fully rendered 3D scene with ground, walls, and racing track | ✅ |
+| **Physics Simulation** | Realistic physics powered by Cannon-es with gravity and collisions | ✅ |
+| **Bugatti Car Model** | High-quality OBJ model with MTL materials | ✅ |
+| **Car Controls** | Smooth WASD/Arrow key controls with physics-based collision | ✅ |
+| **Orbit Camera** | Mouse-controlled camera with drag rotation and scroll zoom | ✅ |
+| **Lap Detection** | Checkpoint system for automatic lap counting | ✅ |
+| **Scoring System** | Points for checkpoints with speed bonus multiplier | ✅ |
+| **HUD Display** | Real-time display of speed, lap, timer, and score | ✅ |
+| **Menu System** | Pause, Resume, Restart, and Game Over functionality | ✅ |
+| **Visual Polish** | Shadows, lighting, fog, and smooth animations | ✅ |
+
+### Bonus Features Implemented
+| Feature | Description | Status |
+|---------|-------------|:------:|
+| **UI Menu** | Complete menu with Restart, Pause/Continue buttons | ✅ |
+| **Game Over Screen** | Victory screen with final stats and Play Again option | ✅ |
+| **Scoring System** | Points per checkpoint + lap bonus + speed multiplier | ✅ |
+| **ESC Key Pause** | Quick pause/resume with Escape key | ✅ |
+| **Camera Controls** | Full orbit camera with mouse interaction | ✅ |
+| **3D Car Model** | Imported Bugatti OBJ model with materials | ✅ |
+| **Wall Collision** | Physics-based collision prevents passing through walls | ✅ |
 
 ### Technical Implementation
-- Modular architecture with separate classes for different components
-- Physics-visual synchronization for accurate representation
-- Fixed time-step physics simulation for stability
-- Smooth camera interpolation
-- Checkpoint-based lap detection system
+- ✅ Modular architecture with ES6 classes
+- ✅ Physics-visual synchronization for accurate representation
+- ✅ Fixed time-step physics simulation (60 FPS) for stability
+- ✅ Double smoothing camera system to prevent jitter
+- ✅ Velocity-based movement with physics collision detection
+- ✅ OBJ/MTL model loading with automatic scaling
+- ✅ Responsive design with window resize handling
+
+---
 
 ## 🛠️ Technologies Used
 
-| Library | Version | Purpose |
-|---------|---------|---------|
-| **Three.js** | ^0.160.0 | 3D rendering engine |
-| **Cannon-es** | ^0.20.0 | Physics simulation |
-| **Vite** | ^5.0.0 | Build tool and dev server |
+| Library | Version | Purpose | Documentation |
+|---------|:-------:|---------|:-------------:|
+| **Three.js** | ^0.160.0 | 3D rendering engine | [Docs](https://threejs.org/docs/) |
+| **Cannon-es** | ^0.20.0 | Physics simulation | [Docs](https://pmndrs.github.io/cannon-es/) |
+| **Vite** | ^5.0.0 | Build tool and dev server | [Docs](https://vitejs.dev/) |
+| **OBJLoader** | Three.js | Loading 3D car model | [Docs](https://threejs.org/docs/#examples/en/loaders/OBJLoader) |
+| **MTLLoader** | Three.js | Loading model materials | [Docs](https://threejs.org/docs/#examples/en/loaders/MTLLoader) |
+
+---
 
 ## 📁 Project Structure
 
 ```
 3D-Challenge1/
-├── src/
-│   ├── Car/
-│   │   └── CarController.js      # Car visual model and physics
-│   ├── World/
-│   │   ├── PhysicsWorld.js       # Cannon.js physics world setup
+├── 📂 src/
+│   ├── 📂 Car/
+│   │   └── CarController.js      # Bugatti model + physics-based movement
+│   ├── 📂 World/
+│   │   ├── PhysicsWorld.js       # Cannon-es physics world setup
 │   │   └── Environment.js        # Track, ground, walls, checkpoints
-│   ├── Utils/
+│   ├── 📂 Utils/
 │   │   ├── InputManager.js       # Keyboard input handling
-│   │   └── GameLogic.js          # Lap counting and game state
-│   └── main.js                   # Main entry point and game loop
-├── assets/
-│   ├── textures/                 # Texture files (optional)
-│   └── models/                   # 3D models (optional)
-├── index.html                    # HTML entry with HUD
-├── style.css                     # HUD and UI styling
-├── package.json                  # Dependencies and scripts
-├── README.md                     # This file
-└── challenge-1-requirements.md   # Original requirements
+│   │   └── GameLogic.js          # Lap counting, scoring, game state
+│   └── main.js                   # Main entry point, camera, UI, game loop
+│
+├── 📂 assets/
+│   ├── 📂 textures/              # Texture files
+│   └── 📂 models/
+│       └── 📂 bugatti/           # Bugatti OBJ model files
+│           ├── bugatti.obj
+│           ├── bugatti.mtl
+│           └── README.txt
+│
+├── 📂 demo/                      # Screenshots for documentation
+│   └── .gitkeep
+│
+├── 📄 index.html                 # HTML entry with HUD and overlays
+├── 📄 style.css                  # Complete UI/Menu/Overlay styling
+├── 📄 package.json               # Dependencies and scripts
+├── 📄 README.md                  # This documentation file
+├── 📄 GAME_RULES.md              # Detailed game rules and mechanics
+└── 📄 challenge-1-requirements.md # Original requirements
 ```
+
+---
 
 ## 🚀 Installation and Setup
 
 ### Prerequisites
-- **Node.js** (v16 or higher)
+- **Node.js** v16 or higher ([Download](https://nodejs.org/))
 - **npm** (comes with Node.js)
+- Modern web browser (Chrome, Firefox, Edge recommended)
 
-### Installation Steps
+### Quick Start
 
-1. **Navigate to the project directory:**
-   ```bash
-   cd "d:\DevTools\Projects\3D Programming\3D-Challenge1"
-   ```
+```bash
+# 1. Clone the repository (or navigate to project folder)
+cd "3D-Challenge1"
 
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
+# 2. Install dependencies
+npm install
 
-3. **Start the development server:**
-   ```bash
-   npm run dev
-   ```
+# 3. Start the development server
+npm run dev
 
-4. **Open your browser:**
-   - Vite will display a local URL (typically `http://localhost:5173`)
-   - Open this URL in your browser
+# 4. Open your browser
+# Vite will display a URL (typically http://localhost:5173)
+```
 
-5. **Build for production (optional):**
-   ```bash
-   npm run build
-   ```
+### Build for Production
+
+```bash
+# Build optimized version
+npm run build
+
+# Preview production build
+npm run preview
+```
+
+---
+
+## 📖 Game Rules
+
+> ⚠️ **IMPORTANT: Please read the game rules before playing!**
+
+For detailed game rules, scoring system, and win conditions, please refer to:
+
+### 📜 **[GAME_RULES.md](GAME_RULES.md)**
+
+Quick summary:
+- 🏁 Complete **2 laps** to win the race
+- 🎯 Pass through **4 checkpoints** in order per lap
+- 💰 Earn **100 points** per checkpoint (200 at high speed!)
+- ⭐ Get **500 bonus points** per completed lap
+- ⏸️ Press **ESC** to pause anytime
+
+---
 
 ## 🎮 Controls Guide
 
 ### Keyboard Controls
 
 | Key | Action |
-|-----|--------|
-| **W** or **↑** | Accelerate forward |
-| **S** or **↓** | Brake / Reverse |
-| **A** or **←** | Steer left |
-| **D** or **→** | Steer right |
+|:---:|--------|
+| **W** / **↑** | Accelerate forward |
+| **S** / **↓** | Brake / Reverse |
+| **A** / **←** | Steer left |
+| **D** / **→** | Steer right |
+| **ESC** | Pause / Resume game |
 
-### Gameplay Instructions
+### Mouse Controls (Camera)
 
-1. Click the **"START GAME"** button to begin
-2. Drive through the **yellow checkpoints** in order
-3. The **green checkpoint** marks the start/finish line
-4. Complete full laps by passing through all checkpoints
-5. Monitor your speed, lap count, and time in the HUD
+| Action | Description |
+|--------|-------------|
+| **Hold Left Click + Drag** | Rotate camera around the car |
+| **Mouse Wheel Scroll** | Zoom in/out |
+
+### Menu Options
+
+| Button | Action |
+|--------|--------|
+| **☰ MENU** | Open/close menu dropdown |
+| **🔄 Restart** | Reset race from beginning |
+| **⏸️ Pause** | Pause current game |
+| **▶️ Continue** | Resume from pause |
+| **🔄 Play Again** | Start new race (after game over) |
+
+---
 
 ## 🎯 Game Mechanics
 
-### Physics
-- **Gravity**: -9.82 m/s² (realistic Earth gravity)
-- **Car Mass**: 1000 kg (heavy for better stability)
-- **Friction**: 0.3 (ground-car interaction)
-- **Air Resistance**: Linear and angular damping applied
+### Car Physics
+| Property | Value | Description |
+|----------|:-----:|-------------|
+| **Mass** | 1500 kg | Heavy for stable physics |
+| **Max Speed** | 180 km/h | Forward maximum velocity |
+| **Max Reverse** | 72 km/h | Backward maximum velocity |
+| **Acceleration** | 25 units/s | Speed increase rate |
+| **Braking** | 40 units/s | Deceleration rate |
+| **Steering Speed** | 2.5 rad/s | Turning rate |
 
-### Car Behavior
-- **Acceleration**: Gradual speed increase (25 units/second) for realistic feel
-- **Braking**: Strong deceleration (40 units/second) when pressing S while moving forward
-- **Reverse**: Separate reverse mode (max 20 m/s) when stopped or moving backward
-- **Idle Deceleration**: Natural slowdown (15 units/second) when no input
-- **Steering**: Speed-dependent turning - faster speed = less steering influence
-- **Max Forward Speed**: 50 m/s (~180 km/h)
-- **Max Reverse Speed**: 20 m/s (~72 km/h)
+### Collision System
+- **Physics-based collision** with track walls
+- Car uses velocity-based movement (not position-based)
+- Collision events stop car from passing through barriers
+- Physics body size: 3 × 1.5 × 6 units
 
-### Lap Detection
-- **4 Checkpoints**: Evenly distributed around the track
-- **Sequential Detection**: Must pass checkpoints in order
-- **Distance Threshold**: 8 units from checkpoint center
-- **Visual Feedback**: Checkpoints flash green when passed
-- **Lap Completion**: Full notification when lap is completed
+### Scoring System
+| Action | Points |
+|--------|:------:|
+| Checkpoint (normal) | +100 |
+| Checkpoint (>100 km/h) | +200 |
+| Lap completion | +500 |
+
+### Camera System
+- **Double smoothing** algorithm prevents jitter
+- **Spherical coordinates** for orbit rotation
+- Configurable distance: 8-40 units
+- Vertical angle constraints: 0.2 - 1.43 radians
+
+---
 
 ## 🏗️ Architecture Details
 
 ### Class Overview
 
-#### `PhysicsWorld` (src/World/PhysicsWorld.js)
-- Initializes Cannon.js world with gravity
-- Manages contact materials for friction/restitution
-- Provides fixed time-step physics updates
-
-#### `Environment` (src/World/Environment.js)
-- Creates ground plane with checkerboard texture
-- Generates circular track walls (inner and outer)
-- Places checkpoint markers for lap detection
-- Maintains physics-visual synchronization
+```
+RacingGame (main.js)
+├── CarController ────► Physics body + Bugatti model
+├── Environment ──────► Track, walls, checkpoints  
+├── PhysicsWorld ─────► Cannon-es world management
+├── InputManager ─────► Keyboard event handling
+└── GameLogic ────────► Scoring, laps, game state
+```
 
 #### `CarController` (src/Car/CarController.js)
-- Visual car model (chassis + 4 wheels + front indicator)
-- Physics body with 1000kg mass for stability
-- **Simplified arcade-style physics**:
-  - Internal speed tracking (not relying on physics velocity)
-  - Direct position updates for reliable movement
-  - Gradual acceleration/deceleration for smooth driving
-- Input-driven movement and steering
-- Speed-dependent steering (faster = less turning)
-- Smooth wheel rotation animation
+- Loads Bugatti OBJ model with MTL materials
+- Filters unwanted meshes (studio lights, backdrop)
+- Creates physics body with collision detection
+- Implements velocity-based movement for accurate collision
+- Syncs visual model with physics body position
 
-#### `InputManager` (src/Utils/InputManager.js)
-- Captures keyboard events
-- Maintains key state map
-- Provides clean interface for control queries
+#### `Environment` (src/World/Environment.js)
+- Creates circular track with inner/outer walls
+- Places 4 checkpoints around the track
+- Generates checkerboard ground texture
+- Adds physics bodies for all obstacles
 
 #### `GameLogic` (src/Utils/GameLogic.js)
-- Lap counting and checkpoint management
-- Timer functionality
-- Game state control (start/stop/reset)
-- Visual notifications for lap completion
+- Manages lap counting and checkpoint detection
+- Handles scoring with speed bonus multiplier
+- Controls game state (start, pause, resume, reset)
+- Triggers game over callbacks
 
 #### `RacingGame` (src/main.js)
 - Main orchestrator class
-- Scene, lighting, and renderer setup
-- Camera follow logic
-- HUD updates
-- Animation loop
-
-## 🎨 Customization Options
-
-### Modify Car Properties
-Edit [src/Car/CarController.js](src/Car/CarController.js):
-```javascript
-// Speed settings
-this.maxForwardSpeed = 50;    // Max forward speed (m/s)
-this.maxReverseSpeed = 20;    // Max reverse speed (m/s)
-
-// Acceleration/Deceleration rates
-this.accelerationRate = 25;   // How fast to accelerate (units/second)
-this.brakeRate = 40;          // How fast to brake (units/second)
-this.idleDeceleration = 15;   // Natural slowdown when no input
-
-// Steering
-this.steeringSpeed = 2.5;     // Turning speed
-```
-
-### Modify Track Dimensions
-Edit [src/World/Environment.js](src/World/Environment.js):
-```javascript
-this.trackRadius = 50;       // Track circle radius
-this.trackWidth = 20;        // Track width
-this.wallHeight = 5;         // Wall height
-```
-
-### Modify Physics
-Edit [src/World/PhysicsWorld.js](src/World/PhysicsWorld.js):
-```javascript
-this.world.gravity.set(0, -9.82, 0);  // Gravity strength
-friction: 0.3,                         // Surface friction
-restitution: 0.2,                      // Bounciness
-```
-
-## 📊 Performance Considerations
-
-- **Fixed Time Step**: 1/60 second for stable physics
-- **Shadow Maps**: 2048x2048 resolution
-- **Pixel Ratio**: Capped at 2 for performance
-- **Fog**: Reduces distant rendering load
-- **Efficient Collision**: Uses NaiveBroadphase for small scene
-
-## 🐛 Troubleshooting
-
-### Issue: Game doesn't start
-- **Solution**: Check browser console for errors
-- Ensure all dependencies are installed (`npm install`)
-- Try clearing browser cache
-
-### Issue: Car is too fast/slow
-- **Solution**: Adjust `maxForwardSpeed`, `accelerationRate`, and `idleDeceleration` in CarController.js
-
-### Issue: Steering is unresponsive
-- **Solution**: Increase `steeringSpeed` value in CarController.js
-- Note: Steering only works when car is moving (speed > 0.5)
-- Check if keyboard events are being captured
-
-### Issue: Physics feels weird
-- **Solution**: The car uses simplified arcade-style physics with direct position updates
-- Adjust `linearDamping` and `angularDamping` in createPhysicsCar() method
-- Modify contact material friction/restitution in PhysicsWorld.js
-
-### Issue: Speed display jumps erratically
-- **Solution**: The car now uses internal `currentSpeed` tracking for stable HUD display
-- This is independent of physics velocity calculations
-
-## 🎓 Learning Outcomes
-
-This project demonstrates:
-- Integration of 3D rendering (Three.js) with physics simulation (Cannon.js)
-- Modular JavaScript architecture with ES6 modules
-- Real-time synchronization between visual and physics representations
-- Game state management and user input handling
-- Camera control and following mechanics
-- Performance optimization techniques
-
-## 📝 Future Enhancements (Optional)
-
-Potential improvements based on bonus features:
-- 🏎️ **Drifting Mechanics**: Adjust friction when turning sharply
-- 🚧 **Dynamic Obstacles**: Add moving objects on track
-- 🔊 **Audio**: Engine sounds and background music
-- 🎮 **UI Menu**: Start screen and game over states
-- 🏆 **Best Lap Time**: Track and display personal records
-- 🎨 **Better Models**: Import actual 3D car models
-- 🌟 **Particle Effects**: Tire smoke, dust trails
-
-## 📄 License
-
-MIT License - Free to use for educational purposes
-
-## 👨‍💻 Author Information
-
-**Name:** Le Tiep Tuyen  
-**Student ID:** 22020015  
-**Course:** 3D Programming - Three.js  
-**Project:** Challenge 1 - 3D Racing Game Prototype
+- Implements orbit camera with double smoothing
+- Manages all UI overlays and menus
+- Runs animation loop with physics updates
 
 ---
 
-**Note:** This project was created as part of the "3D Programming - Three JS - Challenge 1" assignment. All requirements from the original specification document have been implemented.
+## 🎨 Customization Options
+
+### Car Properties
+Edit `src/Car/CarController.js`:
+```javascript
+this.maxForwardSpeed = 50;    // Max forward speed (m/s)
+this.maxReverseSpeed = 20;    // Max reverse speed (m/s)
+this.accelerationRate = 25;   // Acceleration rate
+this.brakeRate = 40;          // Braking rate
+this.steeringSpeed = 2.5;     // Turning speed
+```
+
+### Track Dimensions
+Edit `src/World/Environment.js`:
+```javascript
+this.trackRadius = 50;        // Track circle radius
+this.trackWidth = 20;         // Track width
+this.wallHeight = 5;          // Wall height
+```
+
+### Camera Settings
+Edit `src/main.js`:
+```javascript
+this.cameraDistance = 18;      // Distance from car
+this.cameraSmoothing = 0.08;   // Position smoothing
+this.targetSmoothing = 0.12;   // LookAt smoothing
+this.minDistance = 8;          // Min zoom distance
+this.maxDistance = 40;         // Max zoom distance
+```
+
+### Game Settings
+Edit `src/Utils/GameLogic.js`:
+```javascript
+this.totalLaps = 2;            // Laps to win
+this.checkpointPoints = 100;   // Points per checkpoint
+this.lapBonusPoints = 500;     // Bonus per lap
+this.speedBonusMultiplier = 2; // High speed multiplier
+```
+
+---
+
+## 🐛 Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| **Game doesn't start** | Check browser console (F12) for errors. Run `npm install`. |
+| **Black screen** | WebGL may be disabled. Try another browser. |
+| **Car passes through walls** | This should be fixed. If occurs, refresh page. |
+| **Camera is jittery** | Double smoothing should prevent this. Check `cameraSmoothing` value. |
+| **Model doesn't load** | Check `/assets/models/bugatti/` folder has OBJ/MTL files. |
+| **Controls unresponsive** | Click on the game window first. Check if game is paused. |
+| **Low FPS** | Reduce browser window size or lower shadow quality. |
+
+---
+
+## 📊 Performance Considerations
+
+| Setting | Value | Purpose |
+|---------|:-----:|---------|
+| Physics Time Step | 1/60s | Stable simulation |
+| Shadow Map Size | 2048×2048 | Quality vs performance |
+| Pixel Ratio | Max 2 | Prevent excessive GPU load |
+| Fog | 50-200 units | Reduce distant rendering |
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License** - see details below:
+
+```
+MIT License
+
+Copyright (c) 2024 Le Tiep Tuyen
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+---
+
+## 👨‍💻 Author Information
+
+| | |
+|---|---|
+| **Name** | Le Tiep Tuyen |
+| **Student ID** | 22020015 |
+| **Course** | 3D Programming - Three.js |
+| **Project** | Challenge 1 - 3D Racing Game Prototype |
+| **GitHub** | [LeTiepTuyen/3D-Racing-Game-ThreeJS](https://github.com/LeTiepTuyen/3D-Racing-Game-ThreeJS) |
+
+---
 
 ## 🔗 References
 
 - [Three.js Documentation](https://threejs.org/docs/)
 - [Cannon-es Documentation](https://pmndrs.github.io/cannon-es/)
 - [Vite Documentation](https://vitejs.dev/)
-- Challenge 1 Requirements Document
+- [OBJLoader Guide](https://threejs.org/docs/#examples/en/loaders/OBJLoader)
+- [MTLLoader Guide](https://threejs.org/docs/#examples/en/loaders/MTLLoader)
 
 ---
 
-**Last Updated:** December 30, 2025
+## 📝 Changelog
+
+### Version 1.0.0 
+- ✅ Initial release with all core features
+- ✅ Bugatti OBJ model integration
+- ✅ Physics-based collision detection
+- ✅ Orbit camera with double smoothing
+- ✅ Complete UI/Menu system
+- ✅ Scoring system with speed bonuses
+- ✅ ESC key pause functionality
+
+---
+
+<div align="center">
+
+**🏁 Happy Racing! 🏁**
+
+*This project was created as part of the "3D Programming - Three.js - Challenge 1" assignment.*
+
+
+</div>

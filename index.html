@@ -17,24 +17,97 @@
         <div class="hud-item">
             <span class="hud-label">Lap:</span>
             <span id="lap">0</span>
+            <span class="hud-unit">/ 3</span>
         </div>
         <div class="hud-item">
             <span class="hud-label">Time:</span>
             <span id="timer">00:00</span>
         </div>
+        <div class="hud-item">
+            <span class="hud-label">Score:</span>
+            <span id="score">0</span>
+        </div>
+    </div>
+
+    <!-- Menu Button (Top Right) -->
+    <div id="menuContainer">
+        <button id="menuButton">☰ MENU</button>
+        <div id="menuDropdown">
+            <button id="restartBtn" class="menu-option">🔄 Restart</button>
+            <button id="pauseBtn" class="menu-option">⏸️ Pause Game</button>
+        </div>
+    </div>
+
+    <!-- Pause Overlay -->
+    <div id="pauseOverlay">
+        <div class="overlay-content">
+            <h2>⏸️ GAME PAUSED</h2>
+            <p>Take a break! The race will continue when you're ready.</p>
+            <div class="pause-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Current Lap:</span>
+                    <span id="pauseLap">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Current Score:</span>
+                    <span id="pauseScore">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Time Elapsed:</span>
+                    <span id="pauseTime">00:00</span>
+                </div>
+            </div>
+            <button id="continueBtn" class="action-btn continue-btn">▶️ CONTINUE</button>
+        </div>
+    </div>
+
+    <!-- Game Over Overlay -->
+    <div id="gameOverOverlay">
+        <div class="overlay-content game-over-content">
+            <h2 id="gameOverTitle">🏁 RACE COMPLETE!</h2>
+            <p id="gameOverMessage">Congratulations! You finished the race!</p>
+            <div class="final-stats">
+                <div class="stat-item final">
+                    <span class="stat-label">Final Score:</span>
+                    <span id="finalScore">0</span>
+                </div>
+                <div class="stat-item final">
+                    <span class="stat-label">Laps Completed:</span>
+                    <span id="finalLaps">0</span>
+                </div>
+                <div class="stat-item final">
+                    <span class="stat-label">Total Time:</span>
+                    <span id="finalTime">00:00</span>
+                </div>
+                <div class="stat-item final">
+                    <span class="stat-label">Best Lap:</span>
+                    <span id="bestLapTime">--:--</span>
+                </div>
+            </div>
+            <div class="game-over-buttons">
+                <button id="playAgainBtn" class="action-btn play-again-btn">🔄 PLAY AGAIN</button>
+            </div>
+        </div>
     </div>
 
     <!-- Instructions overlay -->
     <div id="instructions">
-        <h2>3D Racing Game</h2>
-        <p><strong>Controls:</strong></p>
+        <h2>🏎️ 3D Racing Game</h2>
+        <p><strong>Keyboard Controls:</strong></p>
         <ul>
             <li>W / ↑ - Accelerate</li>
             <li>S / ↓ - Brake / Reverse</li>
             <li>A / ← - Steer Left</li>
             <li>D / → - Steer Right</li>
+            <li>ESC - Pause Game</li>
         </ul>
-        <p class="info">Drive through the checkpoints to complete laps!</p>
+        <p><strong>Camera Controls:</strong></p>
+        <ul>
+            <li>🖱️ Hold Left Click + Drag - Rotate camera</li>
+            <li>🖱️ Mouse Wheel - Zoom in/out</li>
+        </ul>
+        <p class="info">Complete 3 laps to finish the race!</p>
+        <p class="info">Drive through checkpoints to earn points!</p>
         <button id="startButton">START GAME</button>
     </div>
 

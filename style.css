@@ -54,10 +54,221 @@ canvas {
     font-size: 14px;
 }
 
-#speed, #lap, #timer {
+#speed, #lap, #timer, #score {
     color: #0ff;
     font-size: 24px;
     min-width: 80px;
+}
+
+#score {
+    color: #00ff00;
+}
+
+/* ==================== MENU STYLING ==================== */
+#menuContainer {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 50;
+}
+
+#menuButton {
+    background: linear-gradient(135deg, #333, #555);
+    color: #fff;
+    border: 2px solid #ffa500;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#menuButton:hover {
+    background: linear-gradient(135deg, #555, #777);
+    box-shadow: 0 4px 15px rgba(255, 165, 0, 0.4);
+}
+
+#menuDropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 10px;
+    background: rgba(0, 0, 0, 0.95);
+    border: 2px solid #ffa500;
+    border-radius: 10px;
+    overflow: hidden;
+    min-width: 180px;
+    display: none;
+}
+
+#menuDropdown.show {
+    display: block;
+}
+
+.menu-option {
+    display: block;
+    width: 100%;
+    padding: 15px 20px;
+    background: transparent;
+    color: #fff;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s ease;
+}
+
+.menu-option:hover {
+    background: rgba(255, 165, 0, 0.3);
+    color: #ffa500;
+}
+
+.menu-option:not(:last-child) {
+    border-bottom: 1px solid rgba(255, 165, 0, 0.3);
+}
+
+/* ==================== OVERLAY STYLING ==================== */
+#pauseOverlay, #gameOverOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+}
+
+#pauseOverlay.show, #gameOverOverlay.show {
+    display: flex;
+}
+
+.overlay-content {
+    background: linear-gradient(145deg, #1a1a2e, #16213e);
+    padding: 40px 50px;
+    border-radius: 20px;
+    border: 3px solid #ffa500;
+    text-align: center;
+    max-width: 500px;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.overlay-content h2 {
+    color: #ffa500;
+    font-size: 36px;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+}
+
+.overlay-content p {
+    color: #ccc;
+    font-size: 16px;
+    margin-bottom: 25px;
+}
+
+.pause-stats, .final-stats {
+    background: rgba(0, 0, 0, 0.4);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat-item:last-child {
+    border-bottom: none;
+}
+
+.stat-item.final {
+    font-size: 18px;
+}
+
+.stat-label {
+    color: #888;
+}
+
+.stat-item span:last-child {
+    color: #0ff;
+    font-weight: bold;
+}
+
+.action-btn {
+    padding: 15px 40px;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: all 0.3s ease;
+    margin: 5px;
+}
+
+.continue-btn {
+    background: linear-gradient(135deg, #00b894, #00cec9);
+    color: #fff;
+}
+
+.continue-btn:hover {
+    background: linear-gradient(135deg, #00cec9, #00b894);
+    transform: scale(1.05);
+    box-shadow: 0 5px 20px rgba(0, 184, 148, 0.5);
+}
+
+.play-again-btn {
+    background: linear-gradient(135deg, #ffa500, #ff6b00);
+    color: #fff;
+}
+
+.play-again-btn:hover {
+    background: linear-gradient(135deg, #ff6b00, #ffa500);
+    transform: scale(1.05);
+    box-shadow: 0 5px 20px rgba(255, 165, 0, 0.5);
+}
+
+/* Game Over specific styling */
+.game-over-content h2 {
+    font-size: 42px;
+}
+
+.game-over-content.win h2 {
+    color: #00ff00;
+}
+
+.game-over-content.lose h2 {
+    color: #ff4444;
+}
+
+.game-over-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+#finalScore {
+    color: #00ff00 !important;
+    font-size: 24px !important;
 }
 
 /* Instructions Overlay */

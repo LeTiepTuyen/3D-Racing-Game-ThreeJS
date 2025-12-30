@@ -1,0 +1,140 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    overflow: hidden;
+    background-color: #000;
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    height: 100vh;
+}
+
+/* HUD Styling */
+#hud {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    color: #fff;
+    font-size: 18px;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 15px 20px;
+    border-radius: 10px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.hud-item {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.hud-item:last-child {
+    margin-bottom: 0;
+}
+
+.hud-label {
+    color: #ffa500;
+    margin-right: 10px;
+    min-width: 70px;
+}
+
+.hud-unit {
+    color: #888;
+    margin-left: 5px;
+    font-size: 14px;
+}
+
+#speed, #lap, #timer {
+    color: #0ff;
+    font-size: 24px;
+    min-width: 80px;
+}
+
+/* Instructions Overlay */
+#instructions {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.9);
+    color: #fff;
+    padding: 40px 50px;
+    border-radius: 15px;
+    border: 3px solid #ffa500;
+    text-align: center;
+    z-index: 100;
+    max-width: 500px;
+}
+
+#instructions h2 {
+    color: #ffa500;
+    margin-bottom: 20px;
+    font-size: 32px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+#instructions p {
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+#instructions ul {
+    list-style: none;
+    margin-bottom: 20px;
+    text-align: left;
+    display: inline-block;
+}
+
+#instructions li {
+    margin-bottom: 8px;
+    padding: 5px 10px;
+    background: rgba(255, 165, 0, 0.1);
+    border-radius: 5px;
+}
+
+#instructions .info {
+    color: #0ff;
+    font-style: italic;
+    font-size: 14px;
+}
+
+#startButton {
+    background: linear-gradient(135deg, #ffa500, #ff6b00);
+    color: #fff;
+    border: none;
+    padding: 15px 40px;
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: all 0.3s ease;
+    margin-top: 20px;
+}
+
+#startButton:hover {
+    background: linear-gradient(135deg, #ff6b00, #ffa500);
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(255, 165, 0, 0.5);
+}
+
+#startButton:active {
+    transform: scale(0.98);
+}
+
+/* Hidden state */
+.hidden {
+    display: none !important;
+}

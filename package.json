@@ -1,0 +1,27 @@
+{
+  "name": "3d-racing-game-prototype",
+  "version": "1.0.0",
+  "description": "3D Car Racing Game Prototype using Three.js and Cannon.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [
+    "threejs",
+    "cannon-es",
+    "3d",
+    "racing",
+    "game"
+  ],
+  "author": "Le Tiep Tuyen (Student ID: 22020015)",
+  "license": "MIT",
+  "dependencies": {
+    "three": "^0.160.0",
+    "cannon-es": "^0.20.0"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
+  }
+}

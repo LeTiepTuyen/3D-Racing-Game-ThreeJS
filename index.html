@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Racing Game - Challenge 1</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- HUD (Heads-Up Display) -->
+    <div id="hud">
+        <div class="hud-item">
+            <span class="hud-label">Speed:</span>
+            <span id="speed">0</span>
+            <span class="hud-unit">km/h</span>
+        </div>
+        <div class="hud-item">
+            <span class="hud-label">Lap:</span>
+            <span id="lap">0</span>
+        </div>
+        <div class="hud-item">
+            <span class="hud-label">Time:</span>
+            <span id="timer">00:00</span>
+        </div>
+    </div>
+
+    <!-- Instructions overlay -->
+    <div id="instructions">
+        <h2>3D Racing Game</h2>
+        <p><strong>Controls:</strong></p>
+        <ul>
+            <li>W / ↑ - Accelerate</li>
+            <li>S / ↓ - Brake / Reverse</li>
+            <li>A / ← - Steer Left</li>
+            <li>D / → - Steer Right</li>
+        </ul>
+        <p class="info">Drive through the checkpoints to complete laps!</p>
+        <button id="startButton">START GAME</button>
+    </div>
+
+    <!-- Three.js canvas will be inserted here -->
+    <script type="module" src="/src/main.js"></script>
+</body>
+</html>
